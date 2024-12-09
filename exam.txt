@@ -1,0 +1,85 @@
+from keras import layers
+
+vocab = 2
+emb_dim = 5
+emb_layer = layers.Embedding(vocab, emb_dim)
+print(emb_layer)
+
+import numpy as np
+input_ids = np.array([0, 1])
+emb_layer(input_ids).numpy()
+
+text = "The quick brown fox jumps over the lazy dog"
+
+#Split text to words
+tokens_all = text.split()
+print(tokens_all)
+
+#Remove duplicates and sorts
+tokens=sorted(set(tokens_all))
+print(tokens)
+
+#Make vocab
+vocab = {t:i for i, t in enumerate (tokens)}
+print(vocab)
+
+#Convert words to IDs
+[vocab[w] for w in tokens_all]
+
+#Invert the IDs
+inv_vocab = {i:t for t, i in vocab.items()}
+inv_vocab
+
+#Select words on specific IDs:
+ids = [2, 4, 1]
+[inv_vocab[id] for id in ids]
+
+
+
+
+import tensorflow as tf
+from keras.models import Sequential
+from keras.layers import Dense, Flatten
+from keras.optimizers import Adam
+
+# Initialize the model
+model = Sequential()
+
+# Input layer: Flatten 64x64 images
+model.add(Flatten(input_shape=(64, 64)))  # Flatten the 64x64 image
+
+# First hidden layer: 64 neurons, sigmoid activation
+model.add(Dense(64, activation='sigmoid'))
+
+# Second hidden layer: 64 neurons, sigmoid activation
+model.add(Dense(64, activation='sigmoid'))
+
+# Third hidden layer: 256 neurons, sigmoid activation
+model.add(Dense(256, activation='sigmoid'))
+
+# Output layer: 3 neurons, softmax activation
+model.add(Dense(3, activation='softmax'))
+
+# Compile the model
+model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Summary of the model
+model.summary()
+
+
+
+import keras
+from keras import layers
+from keras.applications import VGG16
+
+base_model = VGG16(include_top=False, input_shape=(32, 32, 3))
+inputs = layers.Input(shape=(32,32, 3))
+x = keras.applications.vgg16.preprocess_input(inputs)
+
+x = base_model(x)
+x = layers.Flatten()(x)
+x = layers.Dense(64, activation="relu")(x)
+outputs = layers.Dense(4, activation="softmax")(x)
+
+final_model = keras.Model(inputs, outputs)
+final_model.summary()
